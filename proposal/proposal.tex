@@ -1,0 +1,85 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{listings}
+\title{Proposal for cryptographic functions inside C++ standard library}
+\author{Markus Mayer}
+\usepackage[pdftex,
+            pdftitle={Proposal for cryptographic functions inside C++ standard library},
+            pdfcreator={Markus Mayer},
+            bookmarks=true,
+            bookmarksnumbered=true,
+            pdfpagelabels=true,
+            pdfpagemode=UseOutlines,
+            pdfstartview=FitH,
+            linktocpage=true,
+            colorlinks=true,
+            linkcolor=blue,
+            plainpages=false
+           ]{hyperref}
+\begin{document}
+\maketitle
+\begin{center}
+\begin{tabular}[b]{ll}
+\textbf{Document number:} & Nnnnn=yy-nnnn \\ 
+\textbf{Date:} & 2014-01-29 \\ 
+\textbf{Project:} & Programming Language C++, Library Working Group \\ 
+\textbf{Reply-to:} & Markus Mayer <lotharlutz at gmx dot de> \\ 
+\end{tabular} 
+\end{center}
+\pagebreak
+\tableofcontents
+\pagebreak
+\section{Introduction}
+\section{Motivation and Scope}
+\section{Impact On the Standard}
+\section{Design Decisions}
+\subsection{Representation of bytes and byte ranges}
+As most cryptographical functions work on single bytes or an ranges of bytes, it's an essential question of how to represent these types within the API. For the rest of this document a byte is defined by 8 bits.
+\subsubsection*{Single byte}
+A single byte is represented as an \texttt{usinged char}. This decision was made to avoid misinterpretation as a Character.
+
+\subsubsection*{Byte range}
+Fixed sized byte ranges are represented as \texttt{std::array<unsigned char, SIZE>}. This allows to specify ranges lager then the available int types and avoids a misinterpretation as an integral number (including endianess).
+
+Variable length ranges are represented either as a pair of iterators, or as a pointer (\texttt{void*}) to and the size (\texttt{std::size\_t}) of a memory region. The iterator variant allows a flexible way to specify ranges without exposing to much constrains (e.g. non continuous storage in memory). The second variant avoids unnecessary casting if you want to pass an type greater than \texttt{unsigned char} (e.g. \texttt{fn(\&range, sizeof(range))}).
+
+\subsection{Hash functions}
+A hash function is any algorithm that maps data of arbitrary length to data of a fixed length. %TODO add reference to wikipedia
+Each hash function implementation must fulfill the following synopsis which is based on boost::crc. OpenSSL and libgcrypt uses an equal interface (but in C). Crypto++'s interface is considered to complicated (inheritance depth > 6).
+\begin{lstlisting}[language=C++]
+class hash_function
+{
+public:
+	typedef std::array<unsigned char, ALGORITHM_DEFINED> result_type;
+		
+	void process_byte(unsigned char byte);
+
+	void process_bytes(const void* buffer, std::size_t byte_count);
+
+	template<class IterType>
+	void process_bytes(IterType bytes_begin, IterType bytes_end);
+	
+	void reset();
+	
+	result_type digest() const;
+	
+};
+\end{lstlisting}
+\subsubsection*{Alternatives}
+\begin{itemize}
+\item \texttt{result\_type} could also be called \texttt{value\_type}. \texttt{value\_type} is used by boost::crc, but \texttt{result\_type} was selected to correspond with std::function.
+
+\item \texttt{process\_byte[s](\dots)} could also be called \texttt{update(\dots)} (OpenSSL, Crypto++) or \texttt{write, putc} (libgcrypt).
+
+\item \texttt{reset()} is called \texttt{restart()} by Crypto++
+
+\item Alternative names for \texttt{digest()} are \texttt{hash\_value()} or \texttt{checksum()}.
+\end{itemize}
+
+\section{Technical Specifications}
+
+\section{Acknowledgments}
+\end{document}

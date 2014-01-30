@@ -60,6 +60,11 @@ public:
 	template<class IterType>
 	void process_bytes(IterType bytes_begin, IterType bytes_end);
 	
+	void operator()(const void* buffer, std::size_t byte_count);
+
+	template<class IterType>
+	void operator()(IterType bytes_begin, IterType bytes_end);
+	
 	void reset();
 	
 	result_type digest() const;

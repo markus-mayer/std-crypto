@@ -54,8 +54,6 @@ class hash_function
 {
 public:
 	typedef std::array<unsigned char, ALGORITHM_DEFINED> result_type;
-		
-	void process_byte(unsigned char byte);
 
 	void process_bytes(const void* buffer, std::size_t byte_count);
 

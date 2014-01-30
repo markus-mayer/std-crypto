@@ -39,7 +39,7 @@
 \subsection{Representation of bytes and byte ranges}
 As most cryptographical functions work on single bytes or an ranges of bytes, it's an essential question of how to represent these types within the API. For the rest of this document a byte is defined by 8 bits.
 \subsubsection*{Single byte}
-A single byte is represented as an \texttt{usinged char}. This decision was made to avoid misinterpretation as a Character.
+A single byte is represented as an \texttt{unsigned char}. This decision was made to avoid misinterpretation as a Character.
 
 \subsubsection*{Byte range}
 Fixed sized byte ranges are represented as \texttt{std::array<unsigned char, SIZE>}. This allows to specify ranges lager then the available int types and avoids a misinterpretation as an integral number (including endianess).
@@ -48,7 +48,7 @@ Variable length ranges are represented either as a pair of iterators, or as a po
 
 \subsection{Hash functions}
 A hash function is any algorithm that maps data of arbitrary length to data of a fixed length. %TODO add reference to wikipedia
-Each hash function implementation must fulfill the following synopsis which is based on boost::crc. OpenSSL and libgcrypt uses an equal interface (but in C). Crypto++'s interface is considered to complicated (inheritance depth > 6).
+Each hash function implementation must fulfill the following synopsis which is based on boost::crc. OpenSSL and libgcrypt uses an equal interface (but in C). Crypto++'s interface is considered to complex (inheritance depth > 6).
 \begin{lstlisting}[language=C++]
 class hash_function
 {

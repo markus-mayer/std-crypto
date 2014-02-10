@@ -58,10 +58,11 @@ public:
 		gcry_md_copy(&_hd, other._hd);
 	}
 
-	void operator=(const hash_function& other)
+	hash_function& operator=(const hash_function& other)
 	{
 		gcry_md_close(_hd);
 		gcry_md_copy(&_hd, other._hd);
+		return *this;
 	}	
 
 	~hash_function()

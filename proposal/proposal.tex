@@ -55,15 +55,15 @@ class hash_function
 public:
 	typedef std::array<unsigned char, ALGORITHM_DEFINED> result_type;
 
-	void process_bytes(const void* buffer, std::size_t byte_count);
+	hash_function& process_bytes(const void* buffer, std::size_t byte_count);
 
 	template<class IterType>
-	void process_bytes(IterType bytes_begin, IterType bytes_end);
+	hash_function& process_bytes(IterType bytes_begin, IterType bytes_end);
 	
-	void operator()(const void* buffer, std::size_t byte_count);
+	hash_function& operator()(const void* buffer, std::size_t byte_count);
 
 	template<class IterType>
-	void operator()(IterType bytes_begin, IterType bytes_end);
+	hash_function& operator()(IterType bytes_begin, IterType bytes_end);
 	
 	void reset();
 	
